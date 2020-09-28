@@ -1,8 +1,11 @@
-const express = require('express')
-const app = express()
-const port = 3001
+const express = require('express');
+const app = express();
+const port = 3001;
 const authRouter = require("./src/routers/user/auth");
-app.use(express.json())
+const cors = require('cors');
+
+app.use(cors()); // look properly into this later
+app.use(express.json());
 // const accountRouter = require("./src/routers/user/account");
 // const taskRouter = require("./src/routers/tasks")
 
