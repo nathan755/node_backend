@@ -11,7 +11,7 @@ const authenticate = async (request, response, next) => {
         // get user obj from db using id from jwt,
         const fetchUser = () => {
             return new Promise((resolve, reject)=>{
-                db.query(`SELECT * FROM user WHERE id=?`,[decodedToken.payload.id], (error, results, fields)=>{
+                db.query(`SELECT * FROM account WHERE id=?`,[decodedToken.payload.id], (error, results, fields)=>{
                     if(error!==null){
                         reject(error);
                     }
