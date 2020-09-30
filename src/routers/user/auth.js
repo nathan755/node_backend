@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const jwt = require("jsonwebtoken");
 const protectedRoute = require("../../utils/auth");
+const { response } = require('express');
 
 
 router.post("/login", async (request, response) => {
@@ -36,7 +37,7 @@ router.post("/login", async (request, response) => {
 			if(result){
 				//passwords match, generate and sign JWT
 				const payload = { id:userObject.id };
-				const token = jwt.sign({payload}, "shushhh", {expiresIn:"24 hours"});
+				const token = jwt.sign({payload}, "shushhh", {expiresIn:"24 days"});
 				response.status(201).send({ 
 					token: token,
 					accountId:userObject.id,
@@ -53,6 +54,24 @@ router.post("/login", async (request, response) => {
 		return response.sendStatus(500);
 	}
 });
+
+router.post("/check-login", protectedRoute, async (request, response)=>{
+	try {
+		// if code gets here it means the user is authed because we have the protectedRoute argument
+		const userData = {
+			accountId:request.user.id,
+			company_name:request.user.company_name,
+			email:request.user.email
+		}
+		return response.status(200).send({ currentUser: userData });
+
+
+	} catch (error) {
+		console.log("error",error);
+		return response.sendStatus(500);
+
+	}
+})
 
 router.post("/account-sign-up", async (request, response) => {
 	try {
