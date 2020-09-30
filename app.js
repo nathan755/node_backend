@@ -6,11 +6,11 @@ const cors = require('cors');
 
 app.use(cors()); // look properly into this later
 app.use(express.json());
-// const accountRouter = require("./src/routers/user/account");
+const accountRouter = require("./src/routers/user/account");
 // const taskRouter = require("./src/routers/tasks")
 
 app.use(authRouter);
-// app.use(accountRouter);
+app.use(accountRouter);
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
   })
