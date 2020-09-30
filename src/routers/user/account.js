@@ -17,4 +17,4 @@ router.get("/account-users", async (request, response)=>{
 	}
 });
 
-odule.exports = router;
+module.exports = router;
