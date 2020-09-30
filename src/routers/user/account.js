@@ -1,44 +1,20 @@
+const express = require('express');
+const router = new express.Router();
+const db = require("../../database/connection");
+const protectedRoute = require("../../utils/auth");
+const accountUsers = require("../../utils/query");
+//// make these functions protected!!!! --- >>>
 
-router.post("/remove-user",protectedRoute, async (request, response)=>{
+router.get("/account-users", async (request, response)=>{
 	try {
-		console.log("request.user", request.user);
-
-
-
+		// get all users associated with specific account - account id in query param 
+		const accountId = request.query.account;
+		const users = await accountUsers(accountId);
+		response.status(200).send(users);
 	} catch (error) {
-		
+		console.log("error", error);
+		return response.sendStatus(500);
 	}
-} )
+});
 
-router.post("/delete-account",protectedRoute, async (request, response)=>{
-	try {
-		console.log("request.user", request.user);
-
-
-
-	} catch (error) {
-		
-	}
-} )
-
-router.post("/update-user-details",protectedRoute, async (request, response)=>{
-	try {
-		console.log("request.user", request.user);
-
-
-
-	} catch (error) {
-		
-	}
-} )
-
-router.post("/update-account-details",protectedRoute, async (request, response)=>{
-	try {
-		console.log("request.user", request.user);
-
-
-
-	} catch (error) {
-		
-	}
-})
+odule.exports = router;
