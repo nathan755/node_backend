@@ -14,4 +14,17 @@ const accountUsers = (accountId) => {
     })
 }
 
+const queryDatabase = (sql,values) => {
+    // generic query func
+    return new Promise((resolve, reject)=>{
+        db.query(sql, [values], (error, results, fields)=>{
+            if(error){
+                reject(error)
+                console.log("error", error)
+            }
+            resolve(results)
+        })
+    })
+}
+
 module.exports = accountUsers;
