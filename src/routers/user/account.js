@@ -46,7 +46,7 @@ router.get("/confirm-delete", async (request, response)=>{
 				return response.sendStatus(500);
 			}
 			else{
-				return response.status(200).send({ data:results[0]})
+				return response.status(200).send(results[0])
 			}
 		});
 	} catch (error) {
