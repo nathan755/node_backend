@@ -37,4 +37,24 @@ router.delete("/delete-user", async (request, response)=>{
 	}
 });
 
+router.get("/confirm-delete", async (request, response)=>{
+	try {
+		const accountId =  request.query.accountId
+		db.query(`SELECT (confirm_delete) FROM account WHERE id=?`, [accountId], (error, results, fields)=>{
+			if(error){
+				console.log("error", error)
+				return response.sendStatus(500);
+			}
+			else{
+				return response.status(200).send({ data:results[0]})
+			}
+		});
+	} catch (error) {
+		console.log("error", error);
+		return response.sendStatus(500);
+	}
+});
+
+
+
 module.exports = router;
