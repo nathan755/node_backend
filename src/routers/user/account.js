@@ -55,6 +55,29 @@ router.get("/confirm-delete", async (request, response)=>{
 	}
 });
 
+router.patch("/update-user", async (request, response)=>{
+	try {
+		// will have to update this kind of thing to only update the user with the correct id and company id
+		// fix this when i go over auth agian.
+		const userId =  request.query.userId
+		const {email, role, first_name, last_name } = request.body
+		db.query(`UPDATE user SET email = ?, role = ?, first_name = ?, last_name = ? WHERE id=?`, [email,role,first_name,last_name,userId], (error, results, fields)=>{
+			if(error){
+				console.log("error", error)
+				return response.sendStatus(500);
+			}
+			else{
+				return response.status(201).send(results[0])
+			}
+		});
+	} catch (error) {
+		console.log("error", error);
+		return response.sendStatus(500);
+	}
+});
+
+
+
 
 
 module.exports = router;
