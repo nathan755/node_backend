@@ -79,13 +79,31 @@ router.post("/account-sign-up", async (request, response) => {
 		let data = request.body;
 		data["password"] = hashPassword;
 		const values = Object.values(data);
-		db.query(`INSERT INTO account (username,email,password,company_name,first_name,last_name) VALUES (?)`, [values], (error, results, fields) => {
-			if (error !== null) {
-				console.log("error", error)
-				return response.sendStatus(500);
-			}
-			return response.sendStatus(201);
-		});
+		
+		// depoending on the type of sign up - Insert data into either user or account tables
+		if(request.query.user){
+			// insert into user table 
+			db.query(`INSERT INTO user (email,password,role,first_name,last_name,company_id) VALUES (?)`, [values], (error, results, fields) => {
+				if (error !== null) {
+					console.log("error", error)
+					return response.sendStatus(500);
+				}
+				return response.sendStatus(201);
+			});
+		}
+		else{
+			// insert into account table
+			db.query(`INSERT INTO account (username,email,password,company_name,first_name,last_name) VALUES (?)`, [values], (error, results, fields) => {
+				if (error !== null) {
+					console.log("error", error)
+					return response.sendStatus(500);
+				}
+				return response.sendStatus(201);
+			});
+		}
+
+
+
 
 	} catch (error) {
 		return response.sendStatus(500);
@@ -93,9 +111,7 @@ router.post("/account-sign-up", async (request, response) => {
 });
 
 router.post("/user-sign-up", async (request, response)=>{
-	// a user will be created either:
-		// an account level user adding them in account management section
-		// a user recieving an invite. (the account id will be got from email invite)
+
 })
 
 
