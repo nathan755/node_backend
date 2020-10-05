@@ -4,6 +4,9 @@ const router = new express.Router();
 const db = require("../../database/connection");
 const protectedRoute = require("../../utils/auth");
 const accountUsers = require("../../utils/query");
+const cryptoRandomString = require('crypto-random-string');
+const nodemailer = require('nodemailer');
+const transport = require("../../settings/email");
 //// make these functions protected!!!! --- >>>
 
 router.get("/account-users", async (request, response)=>{
@@ -72,6 +75,45 @@ router.patch("/update-user", async (request, response)=>{
 		});
 	} catch (error) {
 		console.log("error", error);
+		return response.sendStatus(500);
+	}
+});
+
+router.post("/invite", async (request, response)=>{
+	try {
+		const token = cryptoRandomString({length: 32});
+		const {email,accountId} = request.body;
+		const values = [parseInt(accountId),email,token];
+		const insertToken = () => {
+			return new Promise ((resolve, reject)=>{
+				db.query(`INSERT INTO invites (accountid,email,token) VALUES (?)`, [values], (error, results, fields) => {
+					if (error !== null) {
+						reject(error)
+						return response.sendStatus(500);
+					}
+					resolve(results[0]);
+				});
+			});
+		}
+		// only send an email if the data is successfully inserted to db;
+		await insertToken();
+		const message = {
+			from: 'hello@food.com', // Sender address
+			to: email,         // List of recipients
+			subject: 'Invite Link', // Subject line
+			html: `<a>http://localhost:3000?token=${token}</a>` // encode?
+		};
+		transport.sendMail(message, function(err, info) {
+			if (err) {
+			  console.log(err)
+			  return response.sendStatus(500);
+			} else {
+			  console.log(info);
+			  return response.sendStatus(200);
+			}
+		});
+	} 
+	catch (error) {
 		return response.sendStatus(500);
 	}
 });
